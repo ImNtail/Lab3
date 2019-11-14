@@ -111,8 +111,54 @@ namespace Lab3
 		        return Fibonacci(NumOfElement - 1) + Fibonacci(NumOfElement - 2);
 		    }
 		}
-        
+        static int Determinant(int[,] array, int length)
+        {
+            int det = 0;
+            int num = length;
+            if (length == 2)
+            {
+                det = (array[0, 0] * array[1, 1]) - (array[1, 0] * array[0, 1]);
+                return det;
+            }
+            else
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    for (int j = 0; j < length; j++)
+                    {
+                        if (i + j % 2 == 0)
+                        {
+                            det += array[i, j] * Minor(array, i, j, length, out length);
+                        }
+                        else
+                        {
+                            det -= array[i, j] * Minor(array, i, j, length, out length);
+                        }
+                        length = num;
+                    }
+                }
+            }
 
+            return det;
+        }
+        static int Minor(int[,] array, int n, int m, int length, out int num)
+        {
+            num = length - 1;
+            int[,] array_minor = new int[num, num];
+
+            for (int i = 0, q = 0; q < num; i++, q++)
+            {
+                for (int j = 0, p = 0; p < num; j++, p++)
+                {
+                    if (i == n) i++;
+                    if (j == m) j++;
+                    array_minor[q, p] = array[i, j];
+                }
+            }
+            return Determinant(array_minor, num);
+        }
+        
+        
         static void Main(string[] args)
         {
             int select;
@@ -511,7 +557,9 @@ namespace Lab3
             }
 			//рекурсивно посчитать M ij --> A ij --> detA
 			Console.WriteLine();
+			int det = Determinant(array, length);
 			Console.WriteLine();
+            Console.WriteLine("Определитель = {0}", det);
 			Console.WriteLine();
             Console.ReadKey();
         }

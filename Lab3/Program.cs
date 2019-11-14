@@ -50,9 +50,8 @@ namespace Lab3
             }
             return arrayOutput;
         }
-        static int sumIterative(int[] array, int length)
+        static int sumIterative(int[] array)
         {
-            //Сумма элементов массива (итерационно)
             int sumIter = 0;
             for (int i = 0; i < array.Length; i++)
             {
@@ -60,23 +59,21 @@ namespace Lab3
             }
             return sumIter;
         }
-        static int sumRecursive(int[] array, int length)
+        static int sumRecursive(int[] array, int sumRec, int element)
         {
-            //Сумма элементов массива (рекурсивно)
-            if (length == 0)
+            if (element >= array.Length)
             {
-                return 0;
+                return sumRec;
             }
-            if (length == 1)
+            else
             {
-                return array[1];
+            	sumRec += array[element];  	
+            	element++;
             }
-            //что-то не так здесь
-            return array[length - 1] + sumRecursive(array, length - 1);
+            return sumRecursive(array, sumRec, element);
         }
         static int minIterative(int[] array)
         {
-        	//Минимальный элемент массива (итерационно)
         	int minIter = array[0];
             for (int i = 0; i < array.Length; i++)
             {
@@ -87,37 +84,34 @@ namespace Lab3
             }
             return minIter;
         }
-        static int minRecursive(int[] array, int length)
+        static int minRecursive(int[] array, int minRec, int element)
         {
-        	//Минимальный элемент массива (рекурсивно)
-        	int minRec = array[0];
-        	if (length < 1)
-        	{
-        		return 0;
-        	}
-        	if (minRec > array[length-1])
-        	{
-        		minRec = array[length-1];
-        	}
-        	minRecursive(array, length-1);
-        	return minRec;
-        	//что-то не так
+			if (element < array.Length)
+			{
+				 if (array[element] < minRec) 
+				 { 
+				 	minRec = array[element];
+				 }
+				 return minRecursive(array, minRec, ++element);
+			}
+			return minRec;
         }
-        static int Fibonacci(int NumOfNums)
+        static int Fibonacci(int NumOfElement)
 		{
-		    if (NumOfNums == 0)
+		    if (NumOfElement == 0)
 		    {
 		        return 0;
 		    }
-		    else if (NumOfNums == 1)
+		    else if (NumOfElement == 1)
 		    {
 		        return 1;
 		    }
 		    else
 		    {
-		        return Fibonacci(NumOfNums - 1) + Fibonacci(NumOfNums - 2);
+		        return Fibonacci(NumOfElement - 1) + Fibonacci(NumOfElement - 2);
 		    }
 		}
+        
 
         static void Main(string[] args)
         {
@@ -454,19 +448,22 @@ namespace Lab3
             Console.WriteLine();
             int[] array = new int[length];
             Random rand = new Random();
+            int element = 0;
+            int sumRec = 0;
+            int minRec = int.MaxValue;
             for (int i = 0; i < length; i++)
             {
                 array[i] = rand.Next(-100, 100);
                 Console.Write("{0, 3} ", array[i]);
             }
             Console.WriteLine("\n\n");
-            Console.WriteLine("Iterative amount = {0}", sumIterative(array, length));
+            Console.WriteLine("Iterative amount = {0}", sumIterative(array));
             Console.WriteLine("\n\n");
-            Console.WriteLine("Recursive amount = {0}", sumRecursive(array, length));
+            Console.WriteLine("Recursive amount = {0}", sumRecursive(array, sumRec, element));
             Console.WriteLine("\n\n");
             Console.WriteLine("Minimal element (iterative) = {0}", minIterative(array));
             Console.WriteLine("\n\n");
-            Console.WriteLine("Minimal element (recursive) = {0}", minRecursive(array, length));
+            Console.WriteLine("Minimal element (recursive) = {0}", minRecursive(array, minRec, element));
             Console.ReadKey();
         }
         
@@ -477,10 +474,10 @@ namespace Lab3
         */
         static void seventh()
         {
-        	Console.Write("Enter the number what you need: ");
-       		int NumOfNums = int.Parse(Console.ReadLine());
+        	Console.Write("Enter the number that you need: ");
+       		int NumOfElement = int.Parse(Console.ReadLine());
         	Console.WriteLine();
-        	Console.WriteLine(Fibonacci(NumOfNums));
+        	Console.WriteLine(Fibonacci(NumOfElement));
         	Console.ReadKey();
         }
        
@@ -513,6 +510,9 @@ namespace Lab3
                 }
             }
 			//рекурсивно посчитать M ij --> A ij --> detA
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine();
             Console.ReadKey();
         }
         

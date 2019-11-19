@@ -117,46 +117,48 @@ namespace Lab3
         static int Determinant(int[,] array, int length)
         {
             int det = 0;
-            int lesslength = length;
             if (length == 2)
             {
                 det = (array[0, 0] * array[1, 1]) - (array[1, 0] * array[0, 1]);
+                Console.WriteLine("Determinant of the second order matrix = " + det + "\n\n");
                 return det;
             }
-            else
+            if (length != 2)
             {
-                for (int i = 0; i < 1; i++)
+				int i = 0;
+                for (int j = 0; j < array.GetLength(0); j++)
                 {
-                	for (int j = 0; j < array.GetLength(0); j++)
+                    if (i + j % 2 == 0)
                     {
-                        if (i + j % 2 == 0)
-                        {
-                            det += array[i, j] * Minor(array, i, j, length, out length);
-                        }
-                        else
-                        {
-                            det -= array[i, j] * Minor(array, i, j, length, out length);
-                        }
-                        length = lesslength;
+                        det += array[i, j] * Minor(array, i, j, length);
+                        Console.WriteLine("Determinant = Previous_det + {0} * Determinant_of_the_second_order_matrix = {1} \n\n", array[i, j], det);
+                    }
+                    else
+                    {
+                        det -= array[i, j] * Minor(array, i, j, length);
+                        Console.WriteLine("Determinant = Previous_det - {0} * Determinant_of_the_second_order_matrix = {1} \n\n", array[i, j], det);
                     }
                 }
-            }
-            return det;
+        	}
+            Console.WriteLine();
+        	return det;
         }
-        static int Minor(int[,] array, int n, int m, int length, out int lesslength)
+        static int Minor(int[,] array, int n, int m, int length)
         {
-            lesslength = length - 1;
-            int[,] MinorArray = new int[lesslength, lesslength];
-            for (int i = 0, q = 0; q < lesslength; i++, q++)
+            length -= 1;
+            int[,] MinorArray = new int[length, length];
+            for (int i = 0, q = 0; q < MinorArray.GetLength(0); i++, q++)
             {
-                for (int j = 0, p = 0; p < lesslength; j++, p++)
+                for (int j = 0, w = 0; w < MinorArray.GetLength(1); j++, w++)
                 {
                     if (i == n) i++;
                     if (j == m) j++;
-                    MinorArray[q, p] = array[i, j];
+                    MinorArray[q, w] = array[i, j];
+                    Console.Write("{0, 3} ", MinorArray[q, w]);
                 }
+                Console.WriteLine("\n");
             }
-            return Determinant(MinorArray, lesslength);
+            return Determinant(MinorArray, length);
         }
         
         static void Main(string[] args)
@@ -487,7 +489,7 @@ namespace Lab3
         */
         static void eighth()
         {
-        	Console.Write("Enter the length of NxN array: ");
+	    Console.Write("Enter the length of NxN array: ");
             int length = int.Parse(Console.ReadLine());
             Console.WriteLine();
             int[,] array = new int[length, length];
@@ -501,7 +503,8 @@ namespace Lab3
                 }
                 Console.Write("\n\n");
             }
-            Console.WriteLine("Определитель = {0}", Determinant(array, length));
+            Console.WriteLine();
+            Console.WriteLine("Answer: determinant of the matrix is {0}", Determinant(array, length));
             Console.ReadKey();
         }
         

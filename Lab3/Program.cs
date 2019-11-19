@@ -4,18 +4,21 @@ namespace Lab3
 {
     class Program
     {
-        static int[,] sum(int[,] array, int[,] array2)
+        static int[,] sum(int[,] array, int[,] array2, out decimal AverageValue)
         {
             //Сумма матриц
+            AverageValue = 0;
             int n = 3;
             int[,] arrayOutput = new int[n, n];
             for (int i = 0; i < arrayOutput.GetLength(0); i++)
             {
                 for (int j = 0; j < arrayOutput.GetLength(1); j++)
                 {
+                	AverageValue += array[i, j];
                     arrayOutput[i, j] = array[i, j] + array2[i, j];
                 }
             }
+            AverageValue = AverageValue / array.Length;
             return arrayOutput;
         }
         static int[,] diff(int[,] array, int[,] array2)
@@ -114,7 +117,7 @@ namespace Lab3
         static int Determinant(int[,] array, int length)
         {
             int det = 0;
-            int num = length;
+            int lesslength = length;
             if (length == 2)
             {
                 det = (array[0, 0] * array[1, 1]) - (array[1, 0] * array[0, 1]);
@@ -124,7 +127,7 @@ namespace Lab3
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    for (int j = 0; j < length; j++)
+                	for (int j = 0; j < array.GetLength(0); j++)
                     {
                         if (i + j % 2 == 0)
                         {
@@ -134,30 +137,27 @@ namespace Lab3
                         {
                             det -= array[i, j] * Minor(array, i, j, length, out length);
                         }
-                        length = num;
+                        length = lesslength;
                     }
                 }
             }
-
             return det;
         }
-        static int Minor(int[,] array, int n, int m, int length, out int num)
+        static int Minor(int[,] array, int n, int m, int length, out int lesslength)
         {
-            num = length - 1;
-            int[,] array_minor = new int[num, num];
-
-            for (int i = 0, q = 0; q < num; i++, q++)
+            lesslength = length - 1;
+            int[,] MinorArray = new int[lesslength, lesslength];
+            for (int i = 0, q = 0; q < lesslength; i++, q++)
             {
-                for (int j = 0, p = 0; p < num; j++, p++)
+                for (int j = 0, p = 0; p < lesslength; j++, p++)
                 {
                     if (i == n) i++;
                     if (j == m) j++;
-                    array_minor[q, p] = array[i, j];
+                    MinorArray[q, p] = array[i, j];
                 }
             }
-            return Determinant(array_minor, num);
+            return Determinant(MinorArray, lesslength);
         }
-        
         
         static void Main(string[] args)
         {
@@ -264,37 +264,27 @@ namespace Lab3
         */
         static void second()
         {
-            int limit = 1, n = 7;
-            int[,] array = new int[n, n];
-            Random rand = new Random();
+            int length = 7;
+            int[,] array = new int[length, length];
+			Random rand = new Random();
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
                     array[i, j] = rand.Next(100);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     Console.Write("{0, 3}  ", array[i, j]);
                 }
+                Console.WriteLine();
             }
-            Console.Write("\n\n");
+            Console.WriteLine("\n\n");
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
-
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
-                    Console.Write("{0, 3}  ", array[6 - j, i]);
+                	array[i, j] = array[length - 1 - j, i];
+                    Console.Write("{0, 3} ", array[i, j]);
                 }
+                Console.WriteLine();
             }
             Console.ReadKey();
         }
@@ -319,18 +309,15 @@ namespace Lab3
                 Console.Write("{0, 3}  ", array[i]);
             }
             Console.Write("\n\n");
-            if (k > 10)
-                k = k % 10;
-            for (int i = 0; i < array.Length; i++)
+            if (k > array.Length)
+            	k = k % 10;
+            for (int i = k; i < array.Length; i++)
             {
-                try
-                {
-                    Console.Write("{0, 3}  ", array[i + k]);
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    Console.Write("{0, 3}  ", array[i - 10 + k]);
-                }
+                Console.Write("{0, 3}  ", array[i]);
+            }
+            for (int i = 0; i < k; i++)
+            {
+            	Console.Write("{0, 3}  ", array[i]);
             }
             Console.ReadKey();
         }
@@ -345,76 +332,57 @@ namespace Lab3
         */
         static void fourth()
         {
-            int limit = 1, n = 3;
+            int n = 3;
             int[,] array = new int[n, n];
             int[,] array2 = new int[n, n];
+            decimal AverageValue = 0;
             Random rand = new Random();
             Console.WriteLine("The first array: ");
             Console.Write("\n\n");
-            for (int i = 0; i < array.GetLength(0); i++)
+			for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
                     array[i, j] = rand.Next(100);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     Console.Write("{0, 3}", array[i, j]);
                 }
+                Console.Write("\n\n");
             }
             Console.Write("\n\n");
-            Console.WriteLine("The second array: ");
-            for (int i = 0; i < array.GetLength(0); i++)
+            Console.WriteLine("The second array: \n");
+			for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
                     array2[i, j] = rand.Next(100);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     Console.Write("{0, 3}", array2[i, j]);
                 }
+                Console.Write("\n\n");
             }
-            Console.Write("\n\n\n");
+            Console.Write("\n\n");
             Console.WriteLine("Output sum array is: \n");
-            int[,] a = sum(array, array2);
-            for (int i = 0; i < 3; i++)
+            int[,] a = sum(array, array2, out AverageValue);
+            for (int i = 0; i < array.GetLength(0); i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < array.GetLength(1); j++)
                 {
-                    if (limit > 3)
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
-                    Console.Write("{0, 4} ", a[i, j]);
+                    Console.Write("{0, 3} ", a[i, j]);
                 }
-                Console.WriteLine();
+                Console.Write("\n\n");
             }
-            Console.WriteLine("\n\n\n");
+            Console.WriteLine("\n");
             Console.WriteLine("Output diff array is: \n");
             int[,] b = diff(array, array2);
             for (int i = 0; i < b.GetLength(0); i++)
             {
                 for (int j = 0; j < b.GetLength(1); j++)
                 {
-                    if (limit > b.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
-                    Console.Write("{0, 4} ", b[i, j]);
+                    Console.Write("{0, 3} ", b[i, j]);
                 }
-                Console.WriteLine();
+                Console.Write("\n\n");
             }
+            Console.Write("\n\n");
+            Console.WriteLine("Average value is {0}", AverageValue);
             Console.ReadKey();
         }
 
@@ -424,41 +392,30 @@ namespace Lab3
         */
         static void fifth()
         {
-            int limit = 1, n = 5;
+            int n = 5;
             int[,] array = new int[n, n];
             int[,] array2 = new int[n, n];
             Random rand = new Random();
-            Console.WriteLine("The first array: ");
-            Console.Write("\n\n");
-            for (int i = 0; i < array.GetLength(0); i++)
+            Console.WriteLine("The first array: \n");
+			for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
                     array[i, j] = rand.Next(10);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     Console.Write("{0, 3}", array[i, j]);
                 }
+                Console.Write("\n\n");
             }
             Console.Write("\n\n");
-            Console.WriteLine("The second array: ");
-            for (int i = 0; i < array.GetLength(0); i++)
+            Console.WriteLine("The second array: \n");
+			for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
                     array2[i, j] = rand.Next(10);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     Console.Write("{0, 3}", array2[i, j]);
                 }
+                Console.Write("\n\n");
             }
             Console.Write("\n\n\n");
             Console.WriteLine("Output product array is: \n");
@@ -467,14 +424,9 @@ namespace Lab3
             {
                 for (int j = 0; j < a.GetLength(1); j++)
                 {
-                    if (limit > a.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     Console.Write("{0, 4} ", a[i, j]);
                 }
+                Console.Write("\n\n\n");
             }
             Console.ReadKey();
         }
@@ -538,7 +490,6 @@ namespace Lab3
         	Console.Write("Enter the length of NxN array: ");
             int length = int.Parse(Console.ReadLine());
             Console.WriteLine();
-      	    int limit = 1;
             int[,] array = new int[length, length];
             Random rand = new Random();
             for (int i = 0; i < array.GetLength(0); i++)
@@ -546,21 +497,11 @@ namespace Lab3
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
                     array[i, j] = rand.Next(10);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n");
-                        limit = 1;
-                    }
-                    limit++;
-                    Console.Write("{0, 3}  ", array[i, j]);
+                    Console.Write("{0, 2}  ", array[i, j]);
                 }
+                Console.Write("\n\n");
             }
-			//рекурсивно посчитать M ij --> A ij --> detA
-			Console.WriteLine();
-			int det = Determinant(array, length);
-			Console.WriteLine();
-            Console.WriteLine("Определитель = {0}", det);
-			Console.WriteLine();
+            Console.WriteLine("Определитель = {0}", Determinant(array, length));
             Console.ReadKey();
         }
         
@@ -575,46 +516,36 @@ namespace Lab3
 		*/
 		static void ninth()
 		{
-			int limit = 1, length = 9;
+			int length = 9;
             int[,] array = new int[length, length];
             Random rand = new Random();
-            for (int i = 0; i < array.GetLength(0); i++)
+			for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
-                    array[i, j] = rand.Next(-99, 99);
-                    if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n\n");
-                        limit = 1;
-                    }
-                    limit++;
+                    array[i, j] = rand.Next(100);
                     Console.Write("{0, 4} ", array[i, j]);
                 }
+                Console.Write("\n\n");
             }
-            Console.Write("\n\n\n");
+			Console.Write("\n\n\n");
             for (int i = 0; i < array.GetLength(0); i++)
             {
                 for (int j = 0; j < array.GetLength(1); j++)
                 {
-                	if (limit > array.GetLength(0))
-                    {
-                        Console.Write("\n\n\n");
-                        limit = 1;
-                    }
-                    limit++;
                     if (i == j)
                     {
-                        Console.Write("{0, 4} ", array[i, 8 - j]);
+                        Console.Write("{0, 3} ", array[i, length - 1 - j]);
                     }
                     
                     if (i != j && i + j == length - 1)
                     {
-                    	Console.Write("{0, 4} ", array[i, i]);
+                    	Console.Write("{0, 3} ", array[i, i]);
                     }
                     else if (i != j)
-                    	Console.Write("{0, 4} ", array[i, j]);
+                    	Console.Write("{0, 3} ", array[i, j]);
                 }
+                Console.Write("\n\n");
             }
             Console.ReadKey();
 		}
